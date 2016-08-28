@@ -1,0 +1,7 @@
+static void SOD(){
+            for(int i = 1; i < A.length; i++){
+               for(int j = i; j < A.length; j += i){
+                   A[j] += i;
+               }
+            }
+        }

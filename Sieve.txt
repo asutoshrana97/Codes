@@ -1,0 +1,22 @@
+static void Sieve()
+        {
+            
+            boolean prime[] = new boolean[100000];
+            
+            Primes = new HashSet<>(prime.length);
+            for (int p=2; p<prime.length; p++)
+            {
+                // If prime[p] is not changed, then it is a prime
+                
+                if (prime[p] == false)
+                {
+                    //System.out.println(p);
+                    Primes.add(p);
+                    // Update all multiples of p
+                    for (int i=p*2; i<prime.length; i += p)
+                        prime[i] = true;
+                }
+            }
+
+            
+        }
