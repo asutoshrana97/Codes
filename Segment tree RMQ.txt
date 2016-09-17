@@ -1,0 +1,86 @@
+static void build(int node, int start, int end,long[] A)
+    {
+        if(start == end)
+        {
+            // Leaf node will have a single element
+            tree[node] = A[start];
+        }
+        else
+        {
+            int mid = (start + end) / 2;
+            // Recurse on the left child
+            build(2*node+1, start, mid, A);
+            // Recurse on the right child
+            build(2*node+2, mid+1, end, A);
+            // Internal node will have the sum of both of its children
+            tree[node] = Math.min(tree[2*node+1], tree[2*node+2]);
+        }
+    }
+
+    static void update(int node, int start, int end, int idx, long val, long[] A)
+    {
+        if(start == end)
+        {
+            // Leaf node
+            A[idx] = val;
+            tree[node] = val;
+        }
+        else
+        {
+            int mid = (start + end) / 2;
+            if(start <= idx && idx <= mid)
+            {
+                // If idx is in the left child, recurse on the left child
+                update(2*node+1, start, mid, idx, val, A);
+            }
+            else
+            {
+                // if idx is in the right child, recurse on the right child
+                update(2*node+2, mid+1, end, idx, val, A);
+            }
+            // Internal node will have the sum of both of its children
+            tree[node] = Math.min(tree[2*node+1], tree[2*node+2]);
+        }
+    }
+
+    static long query(int node, int start, int end, int l, int r,long[] A)
+    {
+        if(r < start || end < l)
+        {
+            // range represented by a node is completely outside the given range
+            return Long.MAX_VALUE;
+        }
+        if(l <= start && end <= r)
+        {
+            // range represented by a node is completely inside the given range
+            return tree[node];
+        }
+        // range represented by a node is partially inside and partially outside the given range
+        int mid = (start + end) / 2;
+        long p1 = query(2*node+1, start, mid, l, r, A);
+        long p2 = query(2*node+2, mid+1, end, l, r, A);
+        return Math.min(p1, p2);
+    }
+
+    static void updateRange(int node, int start, int end, int l, int r, int val)
+    {
+        // out of range
+        if (start > end || start > r || end < l)
+            return;
+
+        // Current node is a leaf node
+        if (start == end)
+        {
+            // Add the difference to current node
+            tree[node] += val;
+            return;
+        }
+
+        // If not a leaf node, recur for children.
+        int mid = (start + end) / 2;
+        updateRange(node*2+1, start, mid, l, r, val);
+        updateRange(node*2+2, mid + 1, end, l, r, val);
+
+        // Use the result of children calls to update this node
+        tree[node] = Math.max(tree[2*node+1], tree[2*node+2]);
+    }
