@@ -1,0 +1,54 @@
+	int[] h = new int[N];
+    int req = (int)Math.ceil(Math.log10((double)N)/Math.log10(2.0));
+    int[][] p = new int[req][N];    
+
+	void dfs(int cur){
+        V[cur] = true;
+        
+        for(Object i1:S[cur]){
+			int i = (int)i1;
+            if(!V[i]){
+                h[i] = h[cur] + 1;
+                p[0][i] = cur;
+                dfs(i);
+            }
+        }
+    }
+
+    int LCA(int u, int v) {
+
+        if (h[u] > h[v]) {
+           u = getparent(u, h[u] - h[v]);
+        } 
+        else if (h[v] > h[u]){
+            v = getparent(v, h[v] - h[u]);
+        }
+        if (u == v) 
+            return u;
+        for (int i = req - 1; i >= 0; i--){
+            if (u!=-1 && v!=-1 && (p[i][u]!=-1) && (p[i][v]!=-1) && p[i][u] != p[i][v]){
+                u = p[i][u];
+                v = p[i][v];
+            }
+        }
+        return p[0][u];
+    }
+
+    int getparent(int u, int k) {
+        for (int i = 0; i < req;i++) {
+          if ((k & 1)!=0) 
+              u = p[i][u];
+          k >>= 1;
+        }
+        return u;
+   }
+
+   void process(int n){
+        for (int i = 1; i <req;i++) {
+            for (int j = 0; j < N; j++){
+              if (p[i - 1][j] != -1){
+                p[i][j] = p[i - 1][p[i - 1][j]];
+              }
+            }
+        }
+    }
